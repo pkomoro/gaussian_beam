@@ -20,6 +20,10 @@ class GaussianBeam:
     
     def divergence(self):
         return self.wavelength / np.pi / self.waist
+    
+    def power_through_aperture(self, r: float, z: float):
+        T = 1 - np.exp(-2 * r ** 2 / self.radius(z) ** 2)
+        return T
 
 
 class Lens:
@@ -65,7 +69,7 @@ class Plotter:
         plt.plot(x, y)
 
     def add_transmission(self, beam: GaussianBeam, lens: Lens):
-        T = 1 - np.exp(-2 * (lens.diameter / 2) ** 2 / beam.radius(lens.position) ** 2)
+        T = beam.power_through_aperture(lens.diameter / 2, lens.position)
         plt.text(lens.position, lens.diameter / 2, "T = " + str(int(100*T)) + "%")
 
     def save(self, path):
