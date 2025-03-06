@@ -1,0 +1,20 @@
+# compiled
+__pycache__/
+*.pyc
+
+# builds
+*.egg-info/
+dist/
+
+# outputs
+*.png
+*.bmp
+*.jpg
+*.txt
+*.stl
+*.svg
+
+#environments and IDE configs
+env/
+tmp/
+.idea/
