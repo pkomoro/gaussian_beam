@@ -46,6 +46,31 @@ class Lens:
         return GaussianBeam(input.wavelength, w2, self.position + d2)
     
 
+class ToroidalMirror:
+    def __init__(self, front_focal_length: float, back_focal_length: float, incidence_angle: float, diameter: float, position: float):        
+        # Sagital radius in [mm]
+        self.r = 2 * np.cos(incidence_angle) / (1 / front_focal_length + 1 / back_focal_length)
+        # Tangential radius in [mm]
+        self.R = 2 / np.cos(incidence_angle) / (1 / front_focal_length + 1 / back_focal_length)
+        # Diameter in [mm]
+        self.diameter = diameter
+        # Lens position in space (one dimensional) in [mm]
+        self.position = position
+        # Focal lenghth in [mm]
+        self.focal_length = self.r / 2 / np.cos(incidence_angle)
+    
+
+    def transform(self, input: GaussianBeam):
+        d1 = self.position - input.waist_position
+        if d1 <= 0:
+            raise Exception("Mirror positioned before waist of the input beam.")
+        w2 = self.focal_length * input.waist / np.sqrt((d1 -self.focal_length)**2 + input.zR ** 2)
+        d2 = self.focal_length + self.focal_length ** 2 * (d1 - self.focal_length) / ((d1 - self.focal_length) ** 2 + input.zR ** 2)
+
+        return GaussianBeam(input.wavelength, w2, self.position + d2)
+   
+
+
 class Plotter:
     def __init__(self, point_density: float = 1.0):        
         # Density of points in the plot
