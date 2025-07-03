@@ -47,17 +47,24 @@ class Lens:
     
 
 class ToroidalMirror:
-    def __init__(self, front_focal_length: float, back_focal_length: float, incidence_angle: float, diameter: float, position: float):        
+    def __init__(self, R: float, r: float, incidence_angle: float, diameter: float, position: float):        
         # Sagital radius in [mm]
-        self.r = 2 * np.cos(incidence_angle) / (1 / front_focal_length + 1 / back_focal_length)
+        self.r = r
         # Tangential radius in [mm]
-        self.R = 2 / np.cos(incidence_angle) / (1 / front_focal_length + 1 / back_focal_length)
+        self.R = R
         # Diameter in [mm]
         self.diameter = diameter
         # Lens position in space (one dimensional) in [mm]
         self.position = position
         # Focal lenghth in [mm]
         self.focal_length = self.r / 2 / np.cos(incidence_angle)
+
+    @staticmethod
+    def from_focal_lengths(front_focal_length: float, back_focal_length: float, incidence_angle: float, diameter: float, position: float):
+        R = 2 / np.cos(incidence_angle) / (1 / front_focal_length + 1 / back_focal_length)
+        r = 2 * np.cos(incidence_angle) / (1 / front_focal_length + 1 / back_focal_length)
+        TM = ToroidalMirror(R, r, incidence_angle, diameter, position)
+        return TM
     
 
     def transform(self, input: GaussianBeam):
@@ -90,6 +97,12 @@ class Plotter:
     def add_lens(self, lens: Lens):
         x = [lens.position, lens.position]
         y = [0, lens.diameter / 2]
+
+        plt.plot(x, y)
+
+    def add_mirror(self, mirror: ToroidalMirror):
+        x = [mirror.position, mirror.position]
+        y = [0, mirror.diameter / 2]
 
         plt.plot(x, y)
 
