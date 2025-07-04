@@ -8,6 +8,8 @@ source_waist = 6.2 # mm
 
 beam1 = GaussianBeam(wavelength, source_waist, 0)
 
+# Polfel setup with additional mirror
+
 m1pos = 1280
 mirror1 = ToroidalMirror(1099.8, 549.9, np.pi / 4 , 100, m1pos)
 beam2 = mirror1.transform(beam1)
@@ -24,9 +26,9 @@ m4pos = 14580
 mirror4 = ToroidalMirror(4795.34, 2397.67, np.pi / 4 , 100, m4pos)
 beam5 = mirror4.transform(beam4)
 
-m5pos = 19070
+m5pos = 19570
 #mirror5 = ToroidalMirror.from_focal_lengths(2090, 10**8, np.pi / 4 , 100, m5pos)
-R = 6200
+R = 7800
 mirror5 = ToroidalMirror(R, R/2, np.pi / 4 , 100, m5pos)
 print(mirror5.R, mirror5.r)
 beam6 = mirror5.transform(beam5)
@@ -50,7 +52,7 @@ plot.add_beam(beam6, m5pos, m5pos + 2000)
 
 
 
-plot.save("outs/polfel/v500GHz_TM1.svg")
+plot.save("outs/polfel/v500GHz_TM1+500mm.svg")
 
 
 
