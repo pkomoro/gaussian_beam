@@ -3,7 +3,7 @@ import numpy as np
 from methods import GaussianBeam, Lens, Plotter
 
 wavelength = 3.15 # mm
-source_waist = 5.6 # mm
+source_waist = 5.6 # mm for photomixing
 
 beam1 = GaussianBeam(wavelength, source_waist, 0)
 

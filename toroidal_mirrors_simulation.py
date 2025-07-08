@@ -26,9 +26,10 @@ m4pos = 14580
 mirror4 = ToroidalMirror(4795.34, 2397.67, np.pi / 4 , 100, m4pos)
 beam5 = mirror4.transform(beam4)
 
-m5pos = 19570
+# 19070 = 209 cm from the line
+m5pos = 19070 + 300
 #mirror5 = ToroidalMirror.from_focal_lengths(2090, 10**8, np.pi / 4 , 100, m5pos)
-R = 7800
+R = 6950
 mirror5 = ToroidalMirror(R, R/2, np.pi / 4 , 100, m5pos)
 print(mirror5.R, mirror5.r)
 beam6 = mirror5.transform(beam5)
@@ -48,12 +49,12 @@ plot.add_beam(beam4, m3pos, m4pos)
 plot.add_mirror(mirror4)
 plot.add_beam(beam5, m4pos, m5pos)
 plot.add_mirror(mirror5)
-plot.add_beam(beam6, m5pos, m5pos + 2000)
+plot.add_beam(beam6, m5pos, m5pos + 1000)
 
 
-
-plot.save("outs/polfel/v500GHz_TM1+500mm.svg")
-
+name = "outs/polfel/v500GHz_TM5_d239cm"
+plot.save(name + ".svg")
+plot.save(name + ".jpg")
 
 
 #Polfel setup
