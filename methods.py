@@ -117,3 +117,34 @@ class Plotter:
     def _prepare_path_to_save(self, path):
         dirs = os.path.dirname(path)
         Path(dirs).mkdir(parents=True, exist_ok=True)
+    
+
+# Airy disk diameter (first minimum)
+def airy_diameter(wavelength, focal_length, aperture_diameter):
+    return 2.44 * wavelength * focal_length / aperture_diameter
+
+
+class GaussianDistribution:
+        def __init__(self, mean: float, stddev: float):
+            self.mean = mean
+            self.stddev = stddev
+
+        def value(self, x: float):
+            return (1 / (self.stddev * np.sqrt(2 * np.pi))) * np.exp(-0.5 * ((x - self.mean) / self.stddev) ** 2)
+
+        
+
+        def overlap(self, PW_beam_angle, PW_beam_diameter):
+            # The product of a Gaussian beam with rectangular plane wave
+            
+            
+
+            step = 0.01
+            points = int(PW_beam_diameter / step) + 1  # Number of points for integration
+            x = np.linspace(PW_beam_angle - PW_beam_diameter / 2, PW_beam_angle + PW_beam_diameter / 2, points)
+
+            y = self.value(x)
+            area_product = np.sum(y) * (x[1] - x[0]) / self.value(self.mean) / PW_beam_diameter  # Approximate integral using the trapezoidal rule
+
+
+            return area_product
