@@ -8,7 +8,8 @@ from methods import GaussianBeam, Lens, GaussianDistribution , airy_diameter
 wavelength = 3.15  # wavelength in mm
 source_waist = 5.6 # mm for photomixing
 optics_diameter = 187  # diameter of the lenses in mm
-detector_aperture = 5  # diameter of the detector in mm
+detector_aperture = 7.38  # diameter of the detector in mm
+detector_acceptance_angle = 8.5  # acceptance angle of the detector in degrees
 
 beam1 = GaussianBeam(wavelength, source_waist, 0)
 
@@ -38,13 +39,14 @@ for d in airy_diameters:
         detector_overlap.append((detector_aperture / d)**2)
 
 
-convergence = 2 * np.rad2deg(np.atan(optics_diameter / 2 / focal_lengths)) / 1.699  # FWHM convergence angle in degrees
+convergence = 2 * np.rad2deg(np.atan(optics_diameter / 2 / focal_lengths)) # Apex angle of a convergence cone in degrees
+# add factor 1 / 1.699  for translation from 1/e2 to FWHM 
 
-detector_acceptance = GaussianDistribution(15, 8.5)  # Detector acceptance in degrees
+detector_acceptance = GaussianDistribution(15, detector_acceptance_angle)  # Detector acceptance in degrees
 
 detector_angular_acceptance = []
 for f in focal_lengths:
-    detector_angular_acceptance.append(detector_acceptance.overlap(15, 2 * np.rad2deg(np.arctan(optics_diameter / 2 / f)) / 1.699))
+    detector_angular_acceptance.append(detector_acceptance.overlap(15, 2 * np.rad2deg(np.arctan(optics_diameter / 2 / f))))
 
 total_efficiency = [x * y for x, y in zip(detector_angular_acceptance, detector_overlap)]
 
@@ -76,11 +78,86 @@ plt.annotate(
     bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="black", lw=1)
 )
 plt.scatter([focal_length_max], [max_ef], color='red', zorder=5)
+
+name = "outs/THz_telecom/focusing_optimization_lens_d" + str(int(optics_diameter)) + "mm_detector1_d" + str(detector_aperture) + "mm" 
+
+
+# Alternative detector aperture analysis
+# Uncomment the following lines to analyze an alternative detector aperture
+
+# detector_aperture_alt = 20  # alternative detector aperture in mm
+
+# detector_overlap_alt = []
+# for d in airy_diameters:
+#     if (detector_aperture_alt / d)**2 >= 1:
+#         detector_overlap_alt.append(1)
+#     else:
+#         detector_overlap_alt.append((detector_aperture_alt / d)**2)
+
+# detector_angular_acceptance_alt = []
+# for f in focal_lengths:
+#     detector_angular_acceptance_alt.append(detector_acceptance.overlap(15, 2 * np.rad2deg(np.arctan(optics_diameter / 2 / f))))
+
+# total_efficiency_alt = [x * y for x, y in zip(detector_angular_acceptance_alt, detector_overlap_alt)]
+
+# plt.plot(focal_lengths, detector_angular_acceptance_alt, label=f'Angular efficiency (detector {detector_aperture_alt} mm)', linestyle=':')
+# plt.plot(focal_lengths, detector_overlap_alt, label=f'Overlap (detector {detector_aperture_alt} mm)', linestyle='--')
+# plt.plot(focal_lengths, total_efficiency_alt, label=f'Total efficiency (detector {detector_aperture_alt} mm)')
+
+# max_ef_alt = np.max(total_efficiency_alt)
+# index_max_alt = np.argmax(total_efficiency_alt)
+# focal_length_max_alt = focal_lengths[index_max_alt]
+# plt.annotate(
+#     f"Alt max efficiency: {max_ef_alt:.2f}\nFocal length: {focal_length_max_alt:.2f} mm",
+#     xy=(focal_length_max_alt, max_ef_alt),
+#     xytext=(focal_length_max_alt + 50, max_ef_alt - 0.1),
+#     arrowprops=dict(arrowstyle="->", color='blue'),
+#     fontsize=10,
+#     color='blue',
+#     bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="blue", lw=1)
+# )
+# plt.scatter([focal_length_max_alt], [max_ef_alt], color='blue', zorder=5)
+
+# name = "outs/THz_telecom/focusing_optimization_lens_d" + str(int(optics_diameter)) + "mm_detector1_d" + str(detector_aperture) + "mm_detector2_d" + str(detector_aperture_alt) + "mm"
+
+
+# Alternative detector acceptance angle analysis
+# Uncomment and modify the following lines to analyze an alternative detector acceptance angle
+
+detector_acceptance_angle_alt = 20  # alternative detector acceptance angle in degrees
+
+detector_acceptance_alt = GaussianDistribution(15, detector_acceptance_angle_alt)  # Alternative detector acceptance
+
+detector_angular_acceptance_alt = []
+for f in focal_lengths:
+    detector_angular_acceptance_alt.append(detector_acceptance_alt.overlap(15, 2 * np.rad2deg(np.arctan(optics_diameter / 2 / f))))
+
+total_efficiency_acceptance_alt = [x * y for x, y in zip(detector_angular_acceptance_alt, detector_overlap)]
+
+plt.plot(focal_lengths, detector_angular_acceptance_alt, label=f'Angular efficiency (acceptance {detector_acceptance_angle_alt}°)', linestyle=':')
+plt.plot(focal_lengths, total_efficiency_acceptance_alt, label=f'Total efficiency (acceptance {detector_acceptance_angle_alt}°)')
+
+max_ef_acceptance_alt = np.max(total_efficiency_acceptance_alt)
+index_max_acceptance_alt = np.argmax(total_efficiency_acceptance_alt)
+focal_length_max_acceptance_alt = focal_lengths[index_max_acceptance_alt]
+plt.annotate(
+    f"Alt max efficiency: {max_ef_acceptance_alt:.2f}\nFocal length: {focal_length_max_acceptance_alt:.2f} mm",
+    xy=(focal_length_max_acceptance_alt, max_ef_acceptance_alt),
+    xytext=(focal_length_max_acceptance_alt + 50, max_ef_acceptance_alt - 0.1),
+    arrowprops=dict(arrowstyle="->", color='green'),
+    fontsize=10,
+    color='green',
+    bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="green", lw=1)
+)
+plt.scatter([focal_length_max_acceptance_alt], [max_ef_acceptance_alt], color='green', zorder=5)
+
+name = "outs/THz_telecom/focusing_optimization_lens_d" + str(int(optics_diameter)) + "mm_detector1_d" + str(detector_aperture) + "mm_acceptance1_" + str(detector_acceptance_angle) + "deg_acceptance2_" + str(detector_acceptance_angle_alt) + "deg"
+
+
 plt.legend()
 plt.grid(True)
 plt.tight_layout()
 #plt.show()
 
-name = "outs/THz_telecom/focusing_optimization_lens_d" + str(int(optics_diameter)) + "mm_detector_d" + str(int(detector_aperture)) + "mm"
 plt.savefig(name + ".svg")
 plt.savefig(name + ".jpg")
