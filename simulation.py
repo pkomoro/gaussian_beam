@@ -7,13 +7,15 @@ source_waist = 5.6 # mm for photomixing
 
 beam1 = GaussianBeam(wavelength, source_waist, 0)
 
-l1pos = 350
-lens1 = Lens(l1pos, 187, l1pos)
+l1pos = 50
+l1f = -33.33  # focal length of the first lens in mm
+lens1 = Lens(l1f, 27, l1pos)
 
 beam2 = lens1.transform(beam1)
 
-l2pos = 2 * 10**4
-lens2 = Lens(l1pos, 187, l2pos)
+l2f = 120
+l2pos = l1pos + l2f - 22
+lens2 = Lens(l2f, 187, l2pos)
 
 beam3 = lens2.transform(beam2)
 
@@ -25,5 +27,8 @@ plot.add_transmission(beam1, lens1)
 plot.add_beam(beam2, l1pos, l2pos)
 plot.add_lens(lens2)
 plot.add_transmission(beam2, lens2)
-plot.add_beam(beam3, l2pos, beam3.waist_position)
-plot.save("outs/v96GHz_d187mm_l20m.svg")
+z = 20000
+plot.add_beam(beam3, l2pos, z)
+name = "v96GHz_2lens_diffusing_z" + str(z / 1000) + "m_f1_" + str(l1f) + "mm_f2_" + str(l2f) + "mm"
+plot.save("outs/THz_telecom/Emmiter/" + name + ".svg")
+plot.save("outs/THz_telecom/Emmiter/" + name + ".jpg")

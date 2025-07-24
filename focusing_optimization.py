@@ -124,34 +124,34 @@ name = "outs/THz_telecom/focusing_optimization_lens_d" + str(int(optics_diameter
 # Alternative detector acceptance angle analysis
 # Uncomment and modify the following lines to analyze an alternative detector acceptance angle
 
-detector_acceptance_angle_alt = 20  # alternative detector acceptance angle in degrees
+# detector_acceptance_angle_alt = 20  # alternative detector acceptance angle in degrees
 
-detector_acceptance_alt = GaussianDistribution(15, detector_acceptance_angle_alt)  # Alternative detector acceptance
+# detector_acceptance_alt = GaussianDistribution(15, detector_acceptance_angle_alt)  # Alternative detector acceptance
 
-detector_angular_acceptance_alt = []
-for f in focal_lengths:
-    detector_angular_acceptance_alt.append(detector_acceptance_alt.overlap(15, 2 * np.rad2deg(np.arctan(optics_diameter / 2 / f))))
+# detector_angular_acceptance_alt = []
+# for f in focal_lengths:
+#     detector_angular_acceptance_alt.append(detector_acceptance_alt.overlap(15, 2 * np.rad2deg(np.arctan(optics_diameter / 2 / f))))
 
-total_efficiency_acceptance_alt = [x * y for x, y in zip(detector_angular_acceptance_alt, detector_overlap)]
+# total_efficiency_acceptance_alt = [x * y for x, y in zip(detector_angular_acceptance_alt, detector_overlap)]
 
-plt.plot(focal_lengths, detector_angular_acceptance_alt, label=f'Angular efficiency (acceptance {detector_acceptance_angle_alt}°)', linestyle=':')
-plt.plot(focal_lengths, total_efficiency_acceptance_alt, label=f'Total efficiency (acceptance {detector_acceptance_angle_alt}°)')
+# plt.plot(focal_lengths, detector_angular_acceptance_alt, label=f'Angular efficiency (acceptance {detector_acceptance_angle_alt}°)', linestyle=':')
+# plt.plot(focal_lengths, total_efficiency_acceptance_alt, label=f'Total efficiency (acceptance {detector_acceptance_angle_alt}°)')
 
-max_ef_acceptance_alt = np.max(total_efficiency_acceptance_alt)
-index_max_acceptance_alt = np.argmax(total_efficiency_acceptance_alt)
-focal_length_max_acceptance_alt = focal_lengths[index_max_acceptance_alt]
-plt.annotate(
-    f"Alt max efficiency: {max_ef_acceptance_alt:.2f}\nFocal length: {focal_length_max_acceptance_alt:.2f} mm",
-    xy=(focal_length_max_acceptance_alt, max_ef_acceptance_alt),
-    xytext=(focal_length_max_acceptance_alt + 50, max_ef_acceptance_alt - 0.1),
-    arrowprops=dict(arrowstyle="->", color='green'),
-    fontsize=10,
-    color='green',
-    bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="green", lw=1)
-)
-plt.scatter([focal_length_max_acceptance_alt], [max_ef_acceptance_alt], color='green', zorder=5)
+# max_ef_acceptance_alt = np.max(total_efficiency_acceptance_alt)
+# index_max_acceptance_alt = np.argmax(total_efficiency_acceptance_alt)
+# focal_length_max_acceptance_alt = focal_lengths[index_max_acceptance_alt]
+# plt.annotate(
+#     f"Alt max efficiency: {max_ef_acceptance_alt:.2f}\nFocal length: {focal_length_max_acceptance_alt:.2f} mm",
+#     xy=(focal_length_max_acceptance_alt, max_ef_acceptance_alt),
+#     xytext=(focal_length_max_acceptance_alt + 50, max_ef_acceptance_alt - 0.1),
+#     arrowprops=dict(arrowstyle="->", color='green'),
+#     fontsize=10,
+#     color='green',
+#     bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="green", lw=1)
+# )
+# plt.scatter([focal_length_max_acceptance_alt], [max_ef_acceptance_alt], color='green', zorder=5)
 
-name = "outs/THz_telecom/focusing_optimization_lens_d" + str(int(optics_diameter)) + "mm_detector1_d" + str(detector_aperture) + "mm_acceptance1_" + str(detector_acceptance_angle) + "deg_acceptance2_" + str(detector_acceptance_angle_alt) + "deg"
+# name = "outs/THz_telecom/focusing_optimization_lens_d" + str(int(optics_diameter)) + "mm_detector1_d" + str(detector_aperture) + "mm_acceptance1_" + str(detector_acceptance_angle) + "deg_acceptance2_" + str(detector_acceptance_angle_alt) + "deg"
 
 
 plt.legend()
