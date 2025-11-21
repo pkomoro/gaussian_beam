@@ -8,8 +8,27 @@ from methods import GaussianBeam, Lens, GaussianDistribution , airy_diameter
 wavelength = 3.15  # wavelength in mm
 source_waist = 5.6 # mm for photomixing
 optics_diameter = 187  # diameter of the lenses in mm
-detector_aperture = 7.38  # diameter of the detector in mm
-detector_acceptance_angle = 8.5  # acceptance angle of the detector in degrees
+
+# Alvidas detector parameters
+detector_aperture = 10  # diameter of the detector in mm
+detector_acceptance_angle = 8.5  # acceptance angle of the detector in degrees (half-angle FWHM)
+detname = "Alvidas"
+experiment = [[118, 3.18], [158, 5.46], [180, 5.89], [300, 5.79]]
+scaling_factor = 0.04  # Scaling factor for experimental values; adjust as needed
+
+# Small cone detector parameters
+# detector_aperture = 12  # diameter of the detector in mm
+# detector_acceptance_angle = 7  # acceptance angle of the detector in degrees (half-angle FWHM)
+# detname = "smallCone"
+# experiment = [[158, 6.75], [180, 8.49], [300, 13.51], [466, 4.16]]
+# scaling_factor = 0.022  # Scaling factor for experimental values; adjust as needed
+
+# Big cone detector parameters
+# detector_aperture = 12  # diameter of the detector in mm
+# detector_acceptance_angle = 11.5/2  # acceptance angle of the detector in degrees (half-angle FWHM)
+# detname = "bigCone"
+# experiment = [[158, 5.47], [180, 7.18], [300, 13.41], [466, 4.55]]
+# scaling_factor = 0.02  # Scaling factor for experimental values; adjust as needed
 
 beam1 = GaussianBeam(wavelength, source_waist, 0)
 
@@ -42,7 +61,7 @@ for d in airy_diameters:
 convergence = 2 * np.rad2deg(np.atan(optics_diameter / 2 / focal_lengths)) # Apex angle of a convergence cone in degrees
 # add factor 1 / 1.699  for translation from 1/e2 to FWHM 
 
-detector_acceptance = GaussianDistribution(15, detector_acceptance_angle)  # Detector acceptance in degrees
+detector_acceptance = GaussianDistribution(15, detector_acceptance_angle / 1.699)  # Detector acceptance in degrees
 
 detector_angular_acceptance = []
 for f in focal_lengths:
@@ -65,13 +84,21 @@ plt.figure(figsize=(8, 5))
 plt.plot(focal_lengths, detector_angular_acceptance, label='Angular efficiency of the detection', linestyle=':')
 plt.plot(focal_lengths, detector_overlap, label='Overlap of the detector with the Airy disk', linestyle='--')
 plt.plot(focal_lengths, total_efficiency, label='Total efficiency')
+
+# Extract experimental data points
+experiment_focal_lengths = [point[0] for point in experiment]
+experiment_efficiencies = [point[1] * scaling_factor for point in experiment]
+# Plot experimental data points
+plt.scatter(experiment_focal_lengths, experiment_efficiencies, color='purple', label='Experimental data', zorder=6)
+
+
 plt.xlabel('Focal length [mm]')
 plt.ylabel('Efficiency')
 plt.title('Comparison of focusing and detection efficiency')
 plt.annotate(
     f"Max efficiency: {max_ef:.2f}\nFocal length: {focal_length_max:.2f} mm",
     xy=(focal_length_max, max_ef),
-    xytext=(focal_length_max + 50, max_ef - 0.1),
+    xytext=(focal_length_max - 250, max_ef + 0.15),
     arrowprops=dict(arrowstyle="->", color='black'),
     fontsize=10,
     color='black',
@@ -79,7 +106,7 @@ plt.annotate(
 )
 plt.scatter([focal_length_max], [max_ef], color='red', zorder=5)
 
-name = "outs/THz_telecom/focusing_optimization_lens_d" + str(int(optics_diameter)) + "mm_detector1_d" + str(detector_aperture) + "mm" 
+name = "outs/THz_telecom/focusing_optimization_lens_d" + str(int(optics_diameter)) + "mm_" + detname + "_d" + str(detector_aperture) + "mm" 
 
 
 # Alternative detector aperture analysis
