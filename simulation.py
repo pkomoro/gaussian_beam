@@ -5,6 +5,14 @@ from methods import GaussianBeam, Lens, Plotter
 wavelength = 3.15 # mm
 source_waist = 5.6 # mm for photomixing
 
+def waist_from_angle(a):
+    # Convert acceptance angle in degrees to waist in mm
+    a_rad = np.radians(a)
+    return wavelength / (np.pi * a_rad)
+
+# detector_acceptance_angle = 7  # acceptance angle of the detector in degrees (half-angle FWHM)
+# detname = "smallCone"
+
 beam1 = GaussianBeam(wavelength, source_waist, 0)
 
 l1pos = 50
