@@ -35,7 +35,7 @@ optics_diameter = 187  # diameter of the lenses in mm
 detector_aperture = 2  # diameter of the detector in mm
 detector_acceptance_angle = 60/2  # acceptance angle of the detector in degrees (half-angle FWHM)
 detname = "bareWG"
-experiment = [[68, 2.13], [118, 4,.0], [158, 4.09], [180, 4]]
+experiment = [[68, 2.13], [118, 4.0], [158, 4.09], [180, 4]]
 scaling_factor = 0.16  # Scaling factor for experimental values; adjust as needed
 
 # Extract experimental data points
